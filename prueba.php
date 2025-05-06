@@ -1,10 +1,10 @@
 <?php
 echo "<pre>";
-echo \""
-    /\_/\  
-   ( o.o )  Hola, yo hice esto >:3
-    > ^ <  
-\"";
+echo '
+ /\_/\  
+( o.o ) < Hola, ¡yo hice esto! :D
+ > ^ <  
+ ';
 echo "</pre>";
-phpinfo();
+
 ?>
