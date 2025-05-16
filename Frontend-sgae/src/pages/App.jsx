@@ -15,7 +15,6 @@ function App() {
     <>
       <Header></Header>
       <BarNav></BarNav>
-      <p className='text-blue-500 font-bold text-3xl text-center mt-5'>Vista</p>
       <div className="flex justify-center items-center h-1/2 bg-gray-200 m-10 rounded-2xl">
         <Carousel images={[img1, img2, img3]} interval={4000} />
       </div>

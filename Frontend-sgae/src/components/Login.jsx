@@ -43,17 +43,30 @@ export default function Login({ usuario, mensajeProteccion }) {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          localStorage.setItem("user_id", data.user_id);
-          localStorage.setItem("nombre", data.nombre);
-          localStorage.setItem("tipo_user", data.tipo_user);
-          localStorage.setItem("grado", data.grado);
-          localStorage.setItem("grupo", data.grupo);
-          localStorage.setItem("turno", data.turno);
-          localStorage.setItem("estatus", data.estatus);
-          localStorage.setItem("conducta", data.conducta);
+          if(data.tipo_user == "alumno"){
+            localStorage.setItem("user_id", data.user_id);
+
+            localStorage.setItem("tipo_user", data.tipo_user);
+
+            localStorage.setItem("matricula", data.matricula);
+
+            localStorage.setItem("nombre", data.nombre);
+            localStorage.setItem("apellidoP", data.apellidoP);
+            localStorage.setItem("apellidoM", data.apellidoM);
+
+            localStorage.setItem("curp", data.curp);
+
+            localStorage.setItem("promedio", data.promedio);
+            localStorage.setItem("estatus", data.estatus);
+            localStorage.setItem("conducta", data.conducta);
+            localStorage.setItem("grado", data.grado);
+            localStorage.setItem("grupo", data.grupo);
+            localStorage.setItem("turno", data.turno);
+          }
+          
 
 
-          switch (data.user_type) {
+          switch (data.tipo_user) {
             case "alumno":
               navigate("/panel/alumno");
               break;

@@ -1,14 +1,14 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Header from '../../components/Header'
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from '../../components/Header';
+import ResumenAcademico from '../../components/panelAlumnos/ResumenAcademico';
+import Calificaciones from '../../components/panelAlumnos/calificaciones';
+import CredencialEscolar from '../../components/panelAlumnos/credencialEscolar';
+import CalendarioEscolar from '../../components/panelAlumnos/calendarioEscolar';
 
 export default function PanelAlumnos() {
   const navigate = useNavigate();
-  const grado = localStorage.getItem("grado");
-  const grupo = localStorage.getItem("grupo");
-  const turno = localStorage.getItem("turno");
-  const estatus = localStorage.getItem("estatus");
-  const conducta = localStorage.getItem("conducta");
+  const [opcionActiva, setOpcionActiva] = useState('resumen'); // por defecto resumen
 
   useEffect(() => {
     const tipo = localStorage.getItem("tipo_user");
@@ -19,11 +19,24 @@ export default function PanelAlumnos() {
     }
   }, []);
 
-  const nombre = localStorage.getItem("nombre");
-
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/alumnos/login");
+    navigate("/");
+  };
+
+  const renderContenido = () => {
+    switch (opcionActiva) {
+      case 'resumen':
+        return <ResumenAcademico />;
+      case 'calificaciones':
+        return <Calificaciones />;
+      case 'credencial':
+        return <CredencialEscolar />;
+      case 'calendario':
+        return <CalendarioEscolar />;
+      default:
+        return <ResumenAcademico />;
+    }
   };
 
   return (
@@ -35,7 +48,7 @@ export default function PanelAlumnos() {
         <header className="w-full h-20 bg-blue-600 flex justify-between items-center px-8 text-white">
           <h1 className="text-2xl font-bold">Panel de Alumnos</h1>
           <div className="flex gap-4 items-center">
-            <span className="text-sm">Bienvenido, {nombre}</span>
+            <span className="text-2xl font-bold">Bienvenido</span>
             <button
               onClick={handleLogout}
               className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
@@ -50,28 +63,59 @@ export default function PanelAlumnos() {
           {/* Sidebar */}
           <aside className="w-64 bg-gray-200 p-4">
             <ul className="space-y-2">
-              <li><label className="block p-2 text-gray-700 hover:bg-gray-300 rounded cursor-pointer">Resumen Académico</label></li>
-              <li><label className="block p-2 text-gray-700 hover:bg-gray-300 rounded cursor-pointer">Calificaciones</label></li>
-              <li><label className="block p-2 text-gray-700 hover:bg-gray-300 rounded cursor-pointer">Credencial Escolar</label></li>
-              <li><label className="block p-2 text-gray-700 hover:bg-gray-300 rounded cursor-pointer">Calendario Escolar</label></li>
+              <li>
+                <label
+                  onClick={() => setOpcionActiva('resumen')}
+                  className={`block p-2 rounded cursor-pointer ${
+                    opcionActiva === 'resumen'
+                      ? 'bg-gray-400 text-white font-semibold'
+                      : 'text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Resumen Académico
+                </label>
+              </li>
+              <li>
+                <label
+                  onClick={() => setOpcionActiva('calificaciones')}
+                  className={`block p-2 rounded cursor-pointer ${
+                    opcionActiva === 'calificaciones'
+                      ? 'bg-gray-400 text-white font-semibold'
+                      : 'text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Calificaciones
+                </label>
+              </li>
+              <li>
+                <label
+                  onClick={() => setOpcionActiva('credencial')}
+                  className={`block p-2 rounded cursor-pointer ${
+                    opcionActiva === 'credencial'
+                      ? 'bg-gray-400 text-white font-semibold'
+                      : 'text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Credencial Escolar
+                </label>
+              </li>
+              <li>
+                <label
+                  onClick={() => setOpcionActiva('calendario')}
+                  className={`block p-2 rounded cursor-pointer ${
+                    opcionActiva === 'calendario'
+                      ? 'bg-gray-400 text-white font-semibold'
+                      : 'text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  Calendario Escolar
+                </label>
+              </li>
             </ul>
           </aside>
 
           {/* Contenido principal */}
-          <main className="flex-1 p-6">
-            <h2 className="text-xl font-bold">Bienvenido al Panel de Alumnos</h2>
-            <p className="mt-2">Aquí puedes ver tus materias y calificaciones.</p>
-            <div className="p-6">
-              <h1 className="text-2xl font-bold">Bienvenido, {nombre}</h1>
-              <ul className="mt-4 space-y-2">
-                <li><strong>Grado:</strong> {grado}</li>
-                <li><strong>Grupo:</strong> {grupo}</li>
-                <li><strong>Turno:</strong> {turno}</li>
-                <li><strong>Estatus:</strong> {estatus}</li>
-                <li><strong>Conducta:</strong> {conducta}</li>
-              </ul>
-            </div>
-          </main>
+          <div className="flex-1 p-4">{renderContenido()}</div>
         </div>
 
         {/* Footer */}
