@@ -64,7 +64,50 @@ if ($password !== $user['use_psw']) {
     exit;
 }
 
-// 8. Si todo está bien, devolver JSON con todos los datos necesarios
+// 8. Obtener las calificaciones del alumno
+$calStmt = $conn->prepare(
+    "SELECT c.Mtr_ID, m.Mtr_Nombre, c.Cal_T1, c.Cal_T2, c.Cal_T3, c.Cal_T4
+     FROM calificaciones c
+     JOIN materias m ON m.Mtr_ID = c.Mtr_ID
+     WHERE c.use_id_alumno = ?"
+);
+$calStmt->bind_param("i", $user['use_id']);
+$calStmt->execute();
+$calRes = $calStmt->get_result();
+$calificaciones = [];
+while ($row = $calRes->fetch_assoc()) {
+    $promTr = ($row['Cal_T1'] + $row['Cal_T2'] + $row['Cal_T3'] + $row['Cal_T4']) / 4;
+    $calificaciones[] = [
+        'Mtr_ID' => $row['Mtr_ID'],
+        'materia'=> $row['Mtr_Nombre'],
+        'T1'     => $row['Cal_T1'],
+        'T2'     => $row['Cal_T2'],
+        'T3'     => $row['Cal_T3'],
+        'T4'     => $row['Cal_T4'],
+        'prom'   => round($promTr,2)
+    ];
+}
+$calStmt->close();
+
+// 10. obtener los Eventos de la tabla eventos
+$evtStmt = $conn->prepare(
+    "SELECT Evento_ID, Evento_Fecha, Evento_Titulo, Evento_Descripcion, use_id_administrador
+     FROM calendario"
+);
+$evtStmt->execute();
+$evtRes = $evtStmt->get_result();
+$eventos = [];
+while ($e = $evtRes->fetch_assoc()) {
+    $eventos[] = [
+        'id'    => $e['Evento_ID'],
+        'fecha' => $e['Evento_Fecha'],
+        'titulo'=> $e['Evento_Titulo'],
+        'desc'  => $e['Evento_Descripcion']
+    ];
+}
+$evtStmt->close();
+
+// 9. Si todo está bien, devolver JSON con todos los datos necesarios
 echo json_encode([
     "success"      => true,
     "message"      => "Login exitoso",
@@ -85,8 +128,12 @@ echo json_encode([
     "grado"        => $user['Grado'],
     "grupo"        => $user['Grupo'],
     "salon"        => $user['Salon_Numero'],
+    // Calificaciones
+    'calificaciones' => $calificaciones,
+    // Eventos
+    'eventos' => $eventos,
 ]);
 
-// 9. Cerrar conexión
+// 10. Cerrar conexión
 $stmt->close();
 $conn->close();

@@ -62,6 +62,10 @@ export default function Login({ usuario, mensajeProteccion }) {
             localStorage.setItem("grado", data.grado);
             localStorage.setItem("grupo", data.grupo);
             localStorage.setItem("turno", data.turno);
+
+            localStorage.setItem("calificaciones", JSON.stringify(data.calificaciones));
+
+            localStorage.setItem("eventos", JSON.stringify(data.eventos))
           }
           
 
